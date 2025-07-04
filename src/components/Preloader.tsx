@@ -38,7 +38,7 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
         {/* Logo with holographic effect */}
         <div className="mb-8">
           <h1 className="text-6xl md:text-8xl font-display font-bold text-holographic mb-4">
-            VIBE
+            HangoutHub
           </h1>
           <p className="text-lg text-muted-foreground">Hang out together, anywhere</p>
         </div>

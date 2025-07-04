@@ -1,100 +1,240 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 import { Users, Send } from 'lucide-react';
 
+interface Friend {
+  id: string;
+  user_id: string;
+  friend_id: string;
+  status: string;
+  profiles: {
+    username: string;
+    display_name: string;
+    avatar_url: string;
+    status: string;
+  } | null;
+}
+
 const FriendsList = () => {
-  const onlineFriends = [
-    { id: 1, name: 'Alex Chen', avatar: '/placeholder.svg', status: 'Listening to Lo-fi Hip Hop', activity: 'music' },
-    { id: 2, name: 'Maya Rodriguez', avatar: '/placeholder.svg', status: 'Watching Netflix', activity: 'watch' },
-    { id: 3, name: 'Jordan Kim', avatar: '/placeholder.svg', status: 'In a room', activity: 'room' },
-    { id: 4, name: 'Sam Taylor', avatar: '/placeholder.svg', status: 'Online', activity: 'online' },
-  ];
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [friendRequests, setFriendRequests] = useState<Friend[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
-  const pendingRequests = [
-    { id: 5, name: 'Riley Johnson', avatar: '/placeholder.svg', mutualFriends: 3 },
-    { id: 6, name: 'Casey Wong', avatar: '/placeholder.svg', mutualFriends: 7 },
-  ];
+  useEffect(() => {
+    if (user) {
+      fetchFriends();
+      fetchFriendRequests();
+    }
+  }, [user]);
 
-  const getActivityColor = (activity: string) => {
-    switch (activity) {
-      case 'music': return 'bg-neon-green';
-      case 'watch': return 'bg-neon-pink';
-      case 'room': return 'bg-neon-cyan';
-      default: return 'bg-primary';
+  const fetchFriends = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('friends')
+      .select(`
+        *,
+        profiles!inner(username, display_name, avatar_url, status)
+      `)
+      .eq('user_id', user.id)
+      .eq('status', 'accepted');
+
+    if (error) {
+      console.error('Error fetching friends:', error);
+    } else {
+      setFriends(data || []);
     }
   };
+
+  const fetchFriendRequests = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('friends')
+      .select(`
+        *,
+        profiles!inner(username, display_name, avatar_url, status)
+      `)
+      .eq('friend_id', user.id)
+      .eq('status', 'pending');
+
+    if (error) {
+      console.error('Error fetching friend requests:', error);
+    } else {
+      setFriendRequests(data || []);
+    }
+    setLoading(false);
+  };
+
+  const acceptFriendRequest = async (requestId: string, friendUserId: string) => {
+    const { error } = await supabase
+      .from('friends')
+      .update({ status: 'accepted' })
+      .eq('id', requestId);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to accept friend request",
+        variant: "destructive",
+      });
+    } else {
+      // Also create the reverse relationship
+      await supabase
+        .from('friends')
+        .insert({
+          user_id: user?.id,
+          friend_id: friendUserId,
+          status: 'accepted'
+        });
+
+      toast({
+        title: "Friend added!",
+        description: "You are now friends",
+      });
+      
+      fetchFriends();
+      fetchFriendRequests();
+    }
+  };
+
+  const declineFriendRequest = async (requestId: string) => {
+    const { error } = await supabase
+      .from('friends')
+      .delete()
+      .eq('id', requestId);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to decline friend request",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Request declined",
+        description: "Friend request has been declined",
+      });
+      fetchFriendRequests();
+    }
+  };
+
+  const getActivityColor = (status: string) => {
+    switch (status) {
+      case 'online': return 'bg-neon-green';
+      case 'away': return 'bg-neon-orange';
+      case 'busy': return 'bg-neon-pink';
+      default: return 'bg-muted';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="glass-card p-6 rounded-2xl">
+          <div className="text-center text-muted-foreground">Loading friends...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Friend Requests */}
-      <div className="glass-card p-6 rounded-2xl">
-        <h3 className="text-lg font-semibold mb-4 flex items-center">
-          <Users className="h-5 w-5 mr-2 text-neon-cyan" />
-          Friend Requests
-          {pendingRequests.length > 0 && (
+      {friendRequests.length > 0 && (
+        <div className="glass-card p-6 rounded-2xl">
+          <h3 className="text-lg font-semibold mb-4 flex items-center">
+            <Users className="h-5 w-5 mr-2 text-neon-cyan" />
+            Friend Requests
             <Badge className="ml-2 bg-destructive text-destructive-foreground">
-              {pendingRequests.length}
+              {friendRequests.length}
             </Badge>
-          )}
-        </h3>
+          </h3>
 
-        <div className="space-y-3">
-          {pendingRequests.map((request) => (
-            <div key={request.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-secondary/50 transition-smooth">
-              <div className="flex items-center space-x-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={request.avatar} alt={request.name} />
-                  <AvatarFallback>{request.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">{request.name}</p>
-                  <p className="text-sm text-muted-foreground">{request.mutualFriends} mutual friends</p>
+          <div className="space-y-3">
+            {friendRequests.map((request) => (
+              <div key={request.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-secondary/50 transition-smooth">
+                <div className="flex items-center space-x-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={request.profiles.avatar_url} alt={request.profiles.display_name} />
+                    <AvatarFallback>{request.profiles.display_name?.charAt(0) || request.profiles.username?.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium">{request.profiles.display_name || request.profiles.username}</p>
+                    <p className="text-sm text-muted-foreground">@{request.profiles.username}</p>
+                  </div>
+                </div>
+                <div className="flex space-x-2">
+                  <Button 
+                    size="sm" 
+                    className="glow-primary"
+                    onClick={() => acceptFriendRequest(request.id, request.user_id)}
+                  >
+                    Accept
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost"
+                    onClick={() => declineFriendRequest(request.id)}
+                  >
+                    Decline
+                  </Button>
                 </div>
               </div>
-              <div className="flex space-x-2">
-                <Button size="sm" className="glow-primary">Accept</Button>
-                <Button size="sm" variant="ghost">Decline</Button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Online Friends */}
       <div className="glass-card p-6 rounded-2xl">
         <h3 className="text-lg font-semibold mb-4 flex items-center">
           <div className="w-3 h-3 bg-neon-green rounded-full pulse-online mr-2"></div>
-          Online Friends ({onlineFriends.length})
+          Friends ({friends.length})
         </h3>
 
-        <div className="space-y-3">
-          {onlineFriends.map((friend) => (
-            <div key={friend.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-secondary/50 transition-smooth group">
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={friend.avatar} alt={friend.name} />
-                    <AvatarFallback>{friend.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                  </Avatar>
-                  <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${getActivityColor(friend.activity)} rounded-full border-2 border-background`}></div>
+        {friends.length === 0 ? (
+          <div className="text-center text-muted-foreground py-8">
+            <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>No friends yet</p>
+            <p className="text-sm">Start by adding some friends to hang out!</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {friends.map((friend) => (
+              <div key={friend.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-secondary/50 transition-smooth group">
+                <div className="flex items-center space-x-3">
+                  <div className="relative">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={friend.profiles.avatar_url} alt={friend.profiles.display_name} />
+                      <AvatarFallback>{friend.profiles.display_name?.charAt(0) || friend.profiles.username?.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${getActivityColor(friend.profiles.status)} rounded-full border-2 border-background`}></div>
+                  </div>
+                  <div>
+                    <p className="font-medium">{friend.profiles.display_name || friend.profiles.username}</p>
+                    <p className="text-sm text-muted-foreground capitalize">{friend.profiles.status}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium">{friend.name}</p>
-                  <p className="text-sm text-muted-foreground">{friend.status}</p>
+                <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-smooth">
+                  <Button size="sm" variant="ghost" className="hover:glow-neon">
+                    <Send className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="ghost" className="hover:glow-primary">
+                    Invite
+                  </Button>
                 </div>
               </div>
-              <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-smooth">
-                <Button size="sm" variant="ghost" className="hover:glow-neon">
-                  <Send className="h-4 w-4" />
-                </Button>
-                <Button size="sm" variant="ghost" className="hover:glow-primary">
-                  Invite
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import AuthPage from '@/components/AuthPage';
 import Preloader from '@/components/Preloader';
 import Navigation from '@/components/Navigation';
 import FriendsList from '@/components/FriendsList';
@@ -10,6 +12,7 @@ import { Music, Video, Users, Play } from 'lucide-react';
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showPreloader, setShowPreloader] = useState(true);
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
     // Simulate initial app loading
@@ -23,6 +26,21 @@ const Index = () => {
   const handlePreloaderComplete = () => {
     setShowPreloader(false);
   };
+
+  const handleAuthSuccess = () => {
+    // Refresh to load authenticated state
+    window.location.reload();
+  };
+
+  if (authLoading) {
+    return <div className="min-h-screen bg-cosmic flex items-center justify-center">
+      <div className="text-holographic">Loading...</div>
+    </div>;
+  }
+
+  if (!user) {
+    return <AuthPage onAuthSuccess={handleAuthSuccess} />;
+  }
 
   if (showPreloader) {
     return <Preloader onComplete={handlePreloaderComplete} />;
