@@ -28,8 +28,8 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-white/10 backdrop-blur-md">
-      <div className="container mx-auto px-4">
+    <nav className="sticky top-0 z-50 glass border-b border-white/10 backdrop-blur-md rounded-b-2xl mx-4 mt-2">
+      <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-4">
@@ -52,12 +52,12 @@ const Navigation = () => {
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
             {/* Quick Create */}
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative" onClick={() => document.getElementById('room-creator')?.scrollIntoView({ behavior: 'smooth' })}>
               <Plus className="h-5 w-5" />
             </Button>
 
             {/* Messages */}
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative" onClick={() => alert('Messages feature coming soon!')}>
               <MessageCircle className="h-5 w-5" />
               <Badge 
                 variant="secondary" 
@@ -68,7 +68,7 @@ const Navigation = () => {
             </Button>
 
             {/* Notifications */}
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative" onClick={() => alert('Notifications feature coming soon!')}>
               <Bell className="h-5 w-5" />
               {notifications > 0 && (
                 <Badge 

@@ -78,15 +78,15 @@ const Index = () => {
           
           {/* Quick action buttons */}
           <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <Button variant="hero" size="xl" className="group">
+            <Button variant="hero" size="xl" className="group" onClick={() => document.getElementById('room-creator')?.scrollIntoView({ behavior: 'smooth' })}>
               <Music className="h-5 w-5 mr-2 group-hover:animate-pulse" />
               Start Music Room
             </Button>
-            <Button variant="neon" size="xl" className="group">
+            <Button variant="neon" size="xl" className="group" onClick={() => document.getElementById('room-creator')?.scrollIntoView({ behavior: 'smooth' })}>
               <Video className="h-5 w-5 mr-2 group-hover:animate-pulse" />
               Watch Together
             </Button>
-            <Button variant="glass" size="xl" className="group">
+            <Button variant="glass" size="xl" className="group" onClick={() => document.getElementById('active-rooms')?.scrollIntoView({ behavior: 'smooth' })}>
               <Users className="h-5 w-5 mr-2 group-hover:animate-pulse" />
               Join Friends
             </Button>
@@ -103,8 +103,12 @@ const Index = () => {
 
             {/* Center Column - Room Creator & Active Rooms */}
             <div className="lg:col-span-2 space-y-6">
-              <RoomCreator />
-              <ActiveRooms />
+              <div id="room-creator">
+                <RoomCreator />
+              </div>
+              <div id="active-rooms">
+                <ActiveRooms />
+              </div>
             </div>
           </div>
         </div>
