@@ -61,7 +61,24 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				neon: {
+					cyan: 'hsl(var(--neon-cyan))',
+					green: 'hsl(var(--neon-green))',
+					pink: 'hsl(var(--neon-pink))',
+					orange: 'hsl(var(--neon-orange))'
 				}
+			},
+			fontFamily: {
+				sans: ['Inter', 'system-ui', 'sans-serif'],
+				display: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
+			},
+			fontSize: {
+				'hero': ['3.5rem', { lineHeight: '1.1', fontWeight: '800' }],
+				'display': ['2.5rem', { lineHeight: '1.2', fontWeight: '700' }],
+			},
+			backdropBlur: {
+				'glass': '20px',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
