@@ -37,38 +37,63 @@ const FriendsList = () => {
   const fetchFriends = async () => {
     if (!user) return;
 
-    const { data, error } = await supabase
+    // Use manual join since foreign key relationships don't exist yet
+    const { data: friendsData, error } = await supabase
       .from('friends')
-      .select(`
-        *,
-        profiles!inner(username, display_name, avatar_url, status)
-      `)
+      .select('*')
       .eq('user_id', user.id)
       .eq('status', 'accepted');
 
     if (error) {
       console.error('Error fetching friends:', error);
-    } else {
-      setFriends(data || []);
+      return;
+    }
+
+    if (friendsData) {
+      const friendsWithProfiles = await Promise.all(
+        friendsData.map(async (friend) => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('username, display_name, avatar_url, status')
+            .eq('user_id', friend.friend_id)
+            .single();
+          
+          return { ...friend, profiles: profile };
+        })
+      );
+      setFriends(friendsWithProfiles.filter(f => f.profiles));
     }
   };
 
   const fetchFriendRequests = async () => {
     if (!user) return;
 
-    const { data, error } = await supabase
+    // Get friend requests with manual join
+    const { data: requestsData, error } = await supabase
       .from('friends')
-      .select(`
-        *,
-        profiles!inner(username, display_name, avatar_url, status)
-      `)
+      .select('*')
       .eq('friend_id', user.id)
       .eq('status', 'pending');
 
     if (error) {
       console.error('Error fetching friend requests:', error);
-    } else {
-      setFriendRequests(data || []);
+      setLoading(false);
+      return;
+    }
+
+    if (requestsData) {
+      const requestsWithProfiles = await Promise.all(
+        requestsData.map(async (request) => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('username, display_name, avatar_url, status')
+            .eq('user_id', request.user_id)
+            .single();
+          
+          return { ...request, profiles: profile };
+        })
+      );
+      setFriendRequests(requestsWithProfiles.filter(r => r.profiles));
     }
     setLoading(false);
   };

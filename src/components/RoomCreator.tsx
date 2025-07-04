@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,6 +11,57 @@ import { Music, Video, Users, Image } from 'lucide-react';
 const RoomCreator = () => {
   const [roomType, setRoomType] = useState<'music' | 'watch' | 'hangout'>('music');
   const [roomName, setRoomName] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const createRoom = async () => {
+    if (!user || !roomName.trim()) return;
+
+    setIsCreating(true);
+    try {
+      const { data, error } = await supabase
+        .from('rooms')
+        .insert({
+          name: roomName.trim(),
+          type: roomType,
+          creator_id: user.id,
+          is_private: false,
+          current_participants: 1
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Join the room as creator
+      await supabase
+        .from('room_participants')
+        .insert({
+          room_id: data.id,
+          user_id: user.id
+        });
+
+      toast({
+        title: "Room created!",
+        description: `Your ${selectedRoom.title.toLowerCase()} "${roomName}" is ready`,
+      });
+
+      setRoomName('');
+      
+      // Could navigate to room here in the future
+      // router.push(`/room/${data.id}`);
+      
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create room. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   const roomTypes = [
     {
@@ -106,11 +160,12 @@ const RoomCreator = () => {
 
         {/* Create Button */}
         <Button 
+          onClick={createRoom}
           className={`w-full glow-primary bg-gradient-to-r ${selectedRoom.gradient} text-white font-semibold py-3`}
-          disabled={!roomName.trim()}
+          disabled={!roomName.trim() || isCreating}
         >
           <selectedRoom.icon className="h-4 w-4 mr-2" />
-          Create {selectedRoom.title}
+          {isCreating ? 'Creating...' : `Create ${selectedRoom.title}`}
         </Button>
       </div>
     </div>
