@@ -72,7 +72,7 @@ const Index = () => {
         <Navigation />
         
         {/* Hero Section */}
-        <div className="text-center py-8 px-4">
+        <div className="text-center py-8 px-4 mt-20">
           <h1 className="text-hero font-display font-bold text-holographic mb-4">
             Hang Out Together
           </h1>

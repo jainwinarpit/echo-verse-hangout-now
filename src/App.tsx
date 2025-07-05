@@ -10,6 +10,7 @@ import MusicRoom from "./pages/MusicRoom";
 import VideoRoom from "./pages/VideoRoom";
 import ChatRoom from "./pages/ChatRoom";
 import Profile from "./pages/Profile";
+import Messages from "./pages/Messages";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/music/:roomId" element={<MusicRoom />} />
             <Route path="/video/:roomId" element={<VideoRoom />} />
             <Route path="/chat/:roomId?" element={<ChatRoom />} />
+            <Route path="/messages" element={<Messages />} />
             <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

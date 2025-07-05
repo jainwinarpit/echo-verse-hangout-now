@@ -71,7 +71,7 @@ const Navigation = () => {
               variant="ghost" 
               size="icon" 
               className="relative hover:bg-white/10 transition-all duration-300 rounded-xl" 
-              onClick={() => window.location.href = '/chat'}
+              onClick={() => window.location.href = '/messages'}
             >
               <MessageCircle className="h-5 w-5" />
               <Badge 
