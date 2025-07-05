@@ -282,4 +282,20 @@ All colors MUST be HSL. Deep space theme with neon accents.
       box-shadow: 0 0 10px hsl(var(--neon-green)), 0 0 20px hsl(var(--neon-green)), 0 0 30px hsl(var(--neon-green));
     }
   }
+
+  /* Floating elements animation for hero section */
+  @keyframes float-hero {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-20px) rotate(90deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(180deg);
+    }
+    75% {
+      transform: translateY(-15px) rotate(270deg);
+    }
+  }
 }

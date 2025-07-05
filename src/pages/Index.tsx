@@ -1,6 +1,4 @@
-import { useState, useEffect, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, Box, Text3D, Float } from '@react-three/drei';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AuthPage from '@/components/AuthPage';
 import Preloader from '@/components/Preloader';
@@ -51,32 +49,27 @@ const Index = () => {
     return <Preloader onComplete={handlePreloaderComplete} />;
   }
 
-  // 3D Scene Component
-  const Scene3D = () => (
-    <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      
-      <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
-        <Sphere args={[1, 32, 32]} position={[-2, 0, 0]}>
-          <meshStandardMaterial color="#00D4FF" wireframe />
-        </Sphere>
-      </Float>
-      
-      <Float speed={1.2} rotationIntensity={0.8} floatIntensity={1.5}>
-        <Box args={[1.5, 1.5, 1.5]} position={[2, 0, 0]}>
-          <meshStandardMaterial color="#FF0080" wireframe />
-        </Box>
-      </Float>
-      
-      <Float speed={0.8} rotationIntensity={0.5} floatIntensity={1}>
-        <Sphere args={[0.7, 16, 16]} position={[0, 2, -1]}>
-          <meshStandardMaterial color="#00FF88" />
-        </Sphere>
-      </Float>
-      
-      <OrbitControls enableZoom={false} enablePan={false} />
-    </Canvas>
+  // Interactive floating elements animation
+  const FloatingElements = () => (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div
+          key={i}
+          className={`absolute rounded-full animate-pulse ${
+            i % 3 === 0 ? 'bg-neon-cyan/20' : 
+            i % 3 === 1 ? 'bg-neon-pink/20' : 'bg-neon-green/20'
+          }`}
+          style={{
+            width: `${Math.random() * 100 + 50}px`,
+            height: `${Math.random() * 100 + 50}px`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animation: `float-hero ${5 + Math.random() * 5}s ease-in-out infinite`,
+            animationDelay: `${Math.random() * 5}s`,
+          }}
+        />
+      ))}
+    </div>
   );
 
   return (
@@ -99,14 +92,10 @@ const Index = () => {
       <div className="relative z-10">
         <Navigation />
         
-        {/* Hero Section with 3D Elements */}
+        {/* Hero Section with Interactive Elements */}
         <div className="relative min-h-screen flex items-center">
-          {/* 3D Background */}
-          <div className="absolute inset-0 opacity-30">
-            <Suspense fallback={null}>
-              <Scene3D />
-            </Suspense>
-          </div>
+          {/* Floating Background Elements */}
+          <FloatingElements />
           
           {/* Hero Content */}
           <div className="relative z-10 container mx-auto px-4 text-center mt-20">
