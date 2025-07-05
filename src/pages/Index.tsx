@@ -96,121 +96,74 @@ const Index = () => {
       <div className="relative z-10">
         <Navigation />
         
-        {/* Hero Section - Gen Z Redesign */}
-        <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-          {/* Enhanced Floating Background Elements */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div
-                key={i}
-                className={`absolute rounded-full animate-bounce ${
-                  i % 4 === 0 ? 'bg-neon-cyan/30' : 
-                  i % 4 === 1 ? 'bg-neon-pink/30' : 
-                  i % 4 === 2 ? 'bg-neon-green/30' : 'bg-neon-orange/30'
-                } shadow-lg`}
-                style={{
-                  width: `${Math.random() * 80 + 40}px`,
-                  height: `${Math.random() * 80 + 40}px`,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animation: `float-hero ${3 + Math.random() * 4}s ease-in-out infinite`,
-                  animationDelay: `${Math.random() * 3}s`,
-                }}
-              />
-            ))}
-          </div>
+        {/* Hero Section - Clean & Modern */}
+        <div className="relative min-h-screen flex items-center justify-center">
+          {/* Subtle Background Elements */}
+          <FloatingElements />
           
           {/* Main Hero Content */}
           <div className="relative z-10 container mx-auto px-4 text-center">
-            <div className="max-w-5xl mx-auto">
-              {/* Trendy Status Badge */}
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-neon-pink/20 to-neon-cyan/20 
-                            backdrop-blur-sm border border-white/10 rounded-full px-6 py-2 mb-8 animate-pulse">
-                <div className="w-2 h-2 bg-neon-green rounded-full animate-ping"></div>
-                <span className="text-sm font-medium text-white">✨ 50K+ Students Already Vibing</span>
+            <div className="max-w-4xl mx-auto space-y-8">
+              
+              {/* Clean Status Badge */}
+              <div className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full">
+                <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-white">50K+ Students Connected</span>
               </div>
 
-              {/* Dynamic Main Heading */}
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-black mb-6 leading-tight">
-                <span className="text-white">Your</span>{" "}
-                <span className="bg-gradient-to-r from-neon-cyan via-neon-pink to-neon-green 
-                               bg-clip-text text-transparent animate-pulse">
-                  Digital
+              {/* Clean Main Heading */}
+              <h1 className="text-5xl md:text-7xl font-display font-bold leading-tight">
+                <span className="text-white">Connect.</span>
+                <br />
+                <span className="bg-gradient-to-r from-neon-cyan to-neon-pink bg-clip-text text-transparent">
+                  Create.
                 </span>
                 <br />
-                <span className="bg-gradient-to-r from-neon-green via-neon-orange to-neon-pink 
-                               bg-clip-text text-transparent">
-                  Squad Goals
-                </span>{" "}
-                <span className="text-white">🚀</span>
+                <span className="text-white">Collaborate.</span>
               </h1>
 
-              {/* Gen Z Tagline */}
-              <div className="text-xl md:text-2xl lg:text-3xl font-bold text-white/80 mb-4">
-                Where Friends = Forever Vibes
-              </div>
-              
-              <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
-                No cap, this is THE place to hang with your crew! 🎵 Stream together, binge-watch, 
-                and chat without the drama. Distance? We don't know her. 💯
+              {/* Simple Tagline */}
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
+                Your digital space to hang out, stream music, watch movies, and chat with friends.
               </p>
 
-              {/* Interactive CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+              {/* Clean CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Button 
-                  size="xl"
-                  className="group bg-gradient-to-r from-neon-pink to-neon-cyan hover:from-neon-cyan hover:to-neon-pink 
-                           text-white font-bold px-8 py-4 rounded-2xl transform hover:scale-110 
-                           transition-all duration-300 shadow-lg hover:shadow-neon border-0 text-lg"
-                  onClick={() => window.location.href = '/music'}
+                  size="lg"
+                  className="bg-gradient-to-r from-neon-cyan to-neon-pink hover:opacity-90 
+                           text-white font-semibold px-8 py-3 rounded-xl 
+                           transition-all duration-300 border-0"
+                  onClick={() => window.location.href = "/music"}
                 >
-                  <Music className="h-6 w-6 mr-3 group-hover:animate-spin" />
-                  Start the Party 🎉
+                  <Music className="h-5 w-5 mr-2" />
+                  Start Music Room
                 </Button>
                 
                 <Button 
-                  size="xl"
+                  size="lg"
                   variant="outline"
-                  className="group border-2 border-neon-green text-neon-green hover:bg-neon-green 
-                           hover:text-black font-bold px-8 py-4 rounded-2xl transform hover:scale-110 
-                           transition-all duration-300 text-lg backdrop-blur-sm"
-                  onClick={() => window.location.href = '/video'}
+                  className="border-2 border-neon-green text-neon-green hover:bg-neon-green 
+                           hover:text-black font-semibold px-8 py-3 rounded-xl 
+                           transition-all duration-300 backdrop-blur-sm"
+                  onClick={() => window.location.href = "/video"}
                 >
-                  <Video className="h-6 w-6 mr-3 group-hover:animate-pulse" />
-                  Movie Night Mode 🍿
+                  <Video className="h-5 w-5 mr-2" />
+                  Watch Together
                 </Button>
               </div>
 
-              {/* Social Proof Pills */}
-              <div className="flex flex-wrap justify-center gap-4 mb-8">
-                <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-                  <span className="text-sm text-white">💬 Instant DMs</span>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-                  <span className="text-sm text-white">🎮 Game Together</span>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-                  <span className="text-sm text-white">📱 Mobile Ready</span>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-                  <span className="text-sm text-white">🔥 Always Lit</span>
-                </div>
-              </div>
-
-              {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-8 max-w-lg mx-auto">
-                <div className="text-center">
-                  <div className="text-2xl md:text-3xl font-bold text-neon-cyan">50K+</div>
-                  <div className="text-sm text-white/60">Active Users</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl md:text-3xl font-bold text-neon-pink">24/7</div>
-                  <div className="text-sm text-white/60">Always Online</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl md:text-3xl font-bold text-neon-green">100%</div>
-                  <div className="text-sm text-white/60">Vibe Check</div>
-                </div>
+              {/* Clean Feature Pills */}
+              <div className="flex flex-wrap justify-center gap-3 pt-8">
+                <span className="text-sm text-white/70 bg-white/5 backdrop-blur-sm rounded-full px-4 py-2">
+                  Real-time Chat
+                </span>
+                <span className="text-sm text-white/70 bg-white/5 backdrop-blur-sm rounded-full px-4 py-2">
+                  HD Streaming
+                </span>
+                <span className="text-sm text-white/70 bg-white/5 backdrop-blur-sm rounded-full px-4 py-2">
+                  Private Rooms
+                </span>
               </div>
             </div>
           </div>
