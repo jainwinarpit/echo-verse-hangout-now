@@ -61,7 +61,7 @@ const Navigation = () => {
               variant="ghost" 
               size="icon" 
               className="relative hover:bg-white/10 transition-all duration-300 rounded-xl" 
-              onClick={() => document.getElementById('room-creator')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => window.location.href = '/dashboard'}
             >
               <Plus className="h-5 w-5" />
             </Button>

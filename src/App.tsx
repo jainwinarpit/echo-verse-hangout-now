@@ -11,6 +11,7 @@ import VideoRoom from "./pages/VideoRoom";
 import ChatRoom from "./pages/ChatRoom";
 import Profile from "./pages/Profile";
 import Messages from "./pages/Messages";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -23,8 +24,9 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/music/:roomId" element={<MusicRoom />} />
-            <Route path="/video/:roomId" element={<VideoRoom />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/music/:roomId?" element={<MusicRoom />} />
+            <Route path="/video/:roomId?" element={<VideoRoom />} />
             <Route path="/chat/:roomId?" element={<ChatRoom />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/profile" element={<Profile />} />

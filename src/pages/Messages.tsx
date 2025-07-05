@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Search, Send, Phone, Video, Info, Smile, Image, Mic, ArrowLeft } from 'lucide-react';
+import { Search, Send, Phone, Video, Info, Smile, Image, Mic, ArrowLeft, Users, UserPlus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import FriendsList from '@/components/FriendsList';
 
 interface Friend {
   id: string;
@@ -205,7 +206,11 @@ const Messages = () => {
     <div className="h-screen bg-cosmic flex">
       {/* Sidebar - Friends List */}
       <div className="w-80 glass-card border-r border-white/10 flex flex-col">
-        {/* Header */}
+        {/* Add Friends List at the top */}
+        <div className="p-4 border-b border-white/10">
+          <FriendsList />
+        </div>
+        {/* Messages Header */}
         <div className="p-4 border-b border-white/10">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-display font-bold text-holographic">Messages</h1>
