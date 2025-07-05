@@ -33,9 +33,14 @@ const Index = () => {
   };
 
   if (authLoading) {
-    return <div className="min-h-screen bg-cosmic flex items-center justify-center">
-      <div className="text-holographic">Loading...</div>
-    </div>;
+    return (
+      <div className="min-h-screen bg-cosmic flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-12 h-12 bg-gradient-to-r from-neon-cyan to-neon-pink rounded-lg animate-pulse"></div>
+          <div className="text-holographic animate-pulse">Loading HangoutHub...</div>
+        </div>
+      </div>
+    );
   }
 
   if (!user) {
